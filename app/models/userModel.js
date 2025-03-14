@@ -23,9 +23,10 @@ userModel.findById = async (id) => {
   });
 };
 
-userModel.updateUser = async (id, updatedData) => {
-    await User.update(updatedData, { where: { id } });
-    return await userModel.findById(id);
-  };
+userModel.getAllUsers = async () => {
+  return await User.findAll({
+    attributes: ['id', 'name', 'lastname', 'email', 'type']
+  });
+};
 
 module.exports = userModel;

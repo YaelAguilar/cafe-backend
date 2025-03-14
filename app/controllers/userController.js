@@ -47,7 +47,6 @@ exports.registerUser = async (req, res) => {
       });
     }
 
-    // Verificar si el usuario ya existe
     const existingUser = await userModel.findByEmail(email);
     if (existingUser) {
       return res.status(409).json({
@@ -248,6 +247,23 @@ exports.logoutUser = (req, res) => {
     return res.status(500).json({
       success: false,
       message: 'Error en el servidor al cerrar sesión.'
+    });
+  }
+};
+
+exports.listUsers = async (req, res) => {
+  try {
+    const users = await userModel.getAllUsers();
+    const filtered = users.filter(u => u.id !== req.userId);
+    return res.status(200).json({
+      success: true,
+      users: filtered
+    });
+  } catch (error) {
+    console.error('Error en listUsers:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Error en el servidor al obtener usuarios.'
     });
   }
 };
