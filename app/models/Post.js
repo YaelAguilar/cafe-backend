@@ -18,6 +18,11 @@ const Post = sequelize.define('Post', {
   user_id: {
     type: DataTypes.INTEGER,
     allowNull: false
+  },
+  // Campo para almacenar JSON de URLs de imágenes
+  images: {
+    type: DataTypes.TEXT,
+    allowNull: true
   }
 }, {
   tableName: 'posts',

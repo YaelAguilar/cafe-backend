@@ -1,4 +1,5 @@
 const postModel = require('../models/postModel');
+const cloudinary = require('../config/cloudinaryConfig');
 
 exports.createPost = async (req, res) => {
   try {
@@ -13,6 +14,7 @@ exports.createPost = async (req, res) => {
       });
     }
 
+    // Solo productores
     if (userType !== false) {
       return res.status(403).json({
         success: false,
@@ -20,7 +22,24 @@ exports.createPost = async (req, res) => {
       });
     }
 
-    const newPost = await postModel.createPost(title.trim(), description.trim(), userId);
+    let imagesArray = [];
+    if (req.files && req.files.length > 0) {
+      for (const file of req.files) {
+        const base64String = file.buffer.toString('base64');
+        const dataURI = `data:${file.mimetype};base64,${base64String}`;
+        const uploadResponse = await cloudinary.uploader.upload(dataURI, {
+          folder: 'proyecto_cafe/posts'
+        });
+        imagesArray.push(uploadResponse.secure_url);
+      }
+    }
+
+    const newPost = await postModel.createPost(
+      title.trim(),
+      description.trim(),
+      userId,
+      imagesArray
+    );
 
     return res.status(201).json({
       success: true,

@@ -3,8 +3,9 @@ const router = express.Router();
 
 const postController = require('../controllers/postController');
 const authMiddleware = require('../middlewares/authMiddleware');
+const uploadImages = require('../middlewares/uploadImages');
 
-router.post('/', authMiddleware, postController.createPost);
+router.post('/', authMiddleware, uploadImages, postController.createPost);
 
 router.get('/', authMiddleware, postController.getAllPosts);
 
