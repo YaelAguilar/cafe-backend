@@ -13,10 +13,10 @@ exports.createPost = async (req, res) => {
       });
     }
 
-    if (userType !== 0) {
+    if (userType !== false) {
       return res.status(403).json({
         success: false,
-        message: 'Solo los productores (type=0) pueden crear publicaciones.'
+        message: 'Solo los productores (type=false) pueden crear publicaciones.'
       });
     }
 
