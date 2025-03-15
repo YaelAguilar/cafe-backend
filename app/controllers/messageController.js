@@ -4,12 +4,12 @@ const messageModel = require('../models/messageModel');
 exports.createMessage = async (req, res) => {
   try {
     const user_id = req.userId;
-    let { text, body, conversation_id, target_user_id } = req.body;
+    let { text, conversation_id, target_user_id } = req.body;
     
-    if (!text || !body) {
+    if (!text) {
       return res.status(400).json({
         success: false,
-        message: 'Faltan campos obligatorios (text, body).'
+        message: 'Falta el campo obligatorio text.'
       });
     }
     
@@ -30,6 +30,7 @@ exports.createMessage = async (req, res) => {
       });
     }
     
+    // Verificar que la conversación existe.
     const conversation = await conversationModel.findById(conversation_id);
     if (!conversation) {
       return res.status(404).json({
@@ -38,7 +39,7 @@ exports.createMessage = async (req, res) => {
       });
     }
     
-    const newMessage = await messageModel.createMessage(text, body, user_id, conversation_id);
+    const newMessage = await messageModel.createMessage(text, user_id, conversation_id);
     
     return res.status(201).json({
       success: true,

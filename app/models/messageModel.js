@@ -2,10 +2,9 @@ const Message = require('./Message');
 
 const messageModel = {};
 
-messageModel.createMessage = async (text, body, user_id, conversation_id) => {
+messageModel.createMessage = async (text, user_id, conversation_id) => {
   return await Message.create({
     text,
-    body,
     user_id,
     conversation_id
   });
