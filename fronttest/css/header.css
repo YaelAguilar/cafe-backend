@@ -1,0 +1,113 @@
+.app-header {
+  background-color: #fff;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0 1.5rem;
+  height: 64px;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  font-size: 1.125rem;
+  color: #1e293b;
+}
+
+.header-logo svg {
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
+  margin-right: 0.75rem;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  color: #64748b;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  transition: all 0.2s ease;
+}
+
+.nav-link svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  margin-right: 0.5rem;
+}
+
+.nav-link:hover {
+  color: #334155;
+  background-color: #f1f5f9;
+}
+
+.nav-link.active {
+  color: #3b82f6;
+  background-color: #eff6ff;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+}
+
+.logout-button {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  color: #ef4444;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  transition: all 0.2s ease;
+}
+
+.logout-button svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  margin-right: 0.5rem;
+}
+
+.logout-button:hover {
+  background-color: #fef2f2;
+}
+
+.mobile-menu-toggle {
+  display: none;
+  color: #64748b;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.mobile-menu-toggle:hover {
+  background-color: #f1f5f9;
+  color: #334155;
+}

@@ -1,0 +1,6 @@
+.app-container,
+.dashboard-container,
+.profile-container,
+.chat-container {
+  margin-top: 64px;
+}

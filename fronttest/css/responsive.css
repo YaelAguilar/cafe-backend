@@ -1,0 +1,91 @@
+@media (max-width: 992px) {
+  .app-header {
+    height: 64px !important;
+    min-height: 64px;
+  }
+  .header-container {
+    position: relative;
+  }
+  
+  .mobile-menu-toggle {
+    display: block;
+  }
+  
+  .header-nav {
+    position: absolute;
+    top: 64px;
+    left: 0;
+    right: 0;
+    background: white;
+    flex-direction: column;
+    padding: 1rem;
+    border-bottom: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    display: none;
+    z-index: 100;
+  }
+  
+  .header-nav.show {
+    display: flex;
+  }
+  
+  .nav-link {
+    width: 100%;
+    padding: 0.75rem 1rem;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .chat-sidebar {
+    width: 100%;
+    height: 60px;
+    flex: 1;
+    overflow-y: auto;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 1rem;
+  }
+  
+  .sidebar-header, .sidebar-search {
+    display: none;
+  }
+  
+  .sidebar-users {
+    display: flex;
+    padding: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  
+  .user-card {
+    flex-direction: column;
+    padding: 0.5rem;
+    border-left: none;
+    border-bottom: 3px solid transparent;
+  }
+  
+  .user-card.active {
+    border-left-color: transparent;
+    border-bottom-color: #3b82f6;
+  }
+  
+  .user-info, .user-meta {
+    display: none;
+  }
+  
+  .chat-container {
+    flex-direction: column;
+  }
+  
+  .chat-main {
+    height: calc(100vh - 124px);
+  }
+  
+  .dashboard-content {
+    grid-template-columns: 1fr;
+  }
+}
