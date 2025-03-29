@@ -4,7 +4,8 @@ const cors = require('cors');
 const userRoutes = require('./routes/userRoutes');
 const conversationRoutes = require('./routes/conversationRoutes');
 const messageRoutes = require('./routes/messageRoutes');
-const postRoutes = require('./routes/postRoutes');
+const loteRoutes = require('./routes/loteRoutes');
+const perfilRoutes = require('./routes/perfilRoutes');
 
 const app = express();
 
@@ -15,10 +16,11 @@ app.use(express.json());
 app.use('/api/users', userRoutes);
 app.use('/api/conversations', conversationRoutes);
 app.use('/api/messages', messageRoutes);
-app.use('/api/posts', postRoutes);
+app.use('/api/lotes', loteRoutes);
+app.use('/api/perfiles', perfilRoutes);
 
 app.get('/', (req, res) => {
-  res.send('Hello World');
+  res.send('CaféConnect API');
 });
 
 module.exports = app;

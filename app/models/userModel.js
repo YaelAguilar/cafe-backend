@@ -29,4 +29,16 @@ userModel.getAllUsers = async () => {
   });
 };
 
+userModel.updateUser = async (id, updatedFields) => {
+  await User.update(updatedFields, { where: { id } });
+  return await userModel.findById(id);
+};
+
+userModel.getUsersByType = async (type) => {
+  return await User.findAll({
+    where: { type },
+    attributes: ['id', 'name', 'lastname', 'email', 'type']
+  });
+};
+
 module.exports = userModel;
