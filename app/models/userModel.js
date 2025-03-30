@@ -6,68 +6,76 @@ const MerchantSupplyNeeds = require("./MerchantSupplyNeeds")
 
 exports.findByEmail = async (email) => {
   try {
-    return await User.findOne({ where: { email } });
+    return await User.findOne({ where: { email } })
   } catch (error) {
-    console.error("Error en findByEmail:", error);
-    throw error;
+    console.error("Error en findByEmail:", error)
+    throw error
   }
-};
+}
 
-exports.findById = async (id) => {
+exports.findById = async (id, options = {}) => {
   try {
-    return await User.findByPk(id, {
+    // Logs para depuración
+    console.log("Buscando usuario con ID:", id)
+    console.log("Opciones de búsqueda:", JSON.stringify(options))
+
+    const user = await User.findByPk(id, {
       attributes: { exclude: ["password"] },
-    });
+      ...(options || {}),
+    })
+
+    console.log("Usuario encontrado:", user ? "Sí" : "No")
+    return user
   } catch (error) {
-    console.error("Error en findById:", error);
-    throw error;
+    console.error("Error en findById:", error)
+    throw error
   }
-};
+}
 
 exports.createUser = async (userData) => {
   try {
-    const { businessName, ...userInfo } = userData;
-    const user = await User.create(userInfo);
+    const { businessName, ...userInfo } = userData
+    const user = await User.create(userInfo)
 
     if (userData.userType === "merchant") {
       await Merchant.create({
         userId: user.id,
         businessName,
-      });
+      })
     } else if (userData.userType === "producer") {
       await Producer.create({
         userId: user.id,
         businessName,
-      });
+      })
     }
 
-    return user;
+    return user
   } catch (error) {
-    console.error("Error en createUser:", error);
-    throw error;
+    console.error("Error en createUser:", error)
+    throw error
   }
-};
+}
 
 exports.updateUser = async (id, userData) => {
   try {
-    await User.update(userData, { where: { id } });
-    return await this.findById(id);
+    await User.update(userData, { where: { id } })
+    return await this.findById(id)
   } catch (error) {
-    console.error("Error en updateUser:", error);
-    throw error;
+    console.error("Error en updateUser:", error)
+    throw error
   }
-};
+}
 
 exports.getAllUsers = async () => {
   try {
     return await User.findAll({
       attributes: { exclude: ["password"] },
-    });
+    })
   } catch (error) {
-    console.error("Error en getAllUsers:", error);
-    throw error;
+    console.error("Error en getAllUsers:", error)
+    throw error
   }
-};
+}
 
 exports.getMerchantProfile = async (userId) => {
   try {
@@ -76,67 +84,128 @@ exports.getMerchantProfile = async (userId) => {
       include: [
         {
           model: Merchant,
-          include: [{ model: MerchantSupplyNeeds, as: "MerchantSupplyNeeds" }]
+          include: [{ model: MerchantSupplyNeeds, as: "MerchantSupplyNeeds" }],
         },
       ],
-    });
+    })
 
     if (!user) {
-      throw new Error("Usuario no encontrado");
+      throw new Error("Usuario no encontrado")
     }
 
-    return user;
+    return user
   } catch (error) {
-    console.error("Error en getMerchantProfile:", error);
-    throw error;
+    console.error("Error en getMerchantProfile:", error)
+    throw error
   }
-};
+}
+
+exports.getProducerProfile = async (userId) => {
+  try {
+    console.log("Obteniendo perfil de productor para userId:", userId)
+
+    const user = await User.findByPk(userId, {
+      attributes: { exclude: ["password"] },
+      include: [{ model: Producer }],
+    })
+
+    if (!user) {
+      console.log("Usuario no encontrado")
+      throw new Error("Usuario no encontrado")
+    }
+
+    if (!user.Producer) {
+      console.log("Perfil de productor no encontrado")
+      throw new Error("Perfil de productor no encontrado")
+    }
+
+    console.log("Perfil de productor encontrado:", user.Producer.id)
+    return user
+  } catch (error) {
+    console.error("Error en getProducerProfile:", error)
+    throw error
+  }
+}
 
 exports.updateMerchantProfile = async (userId, profileData) => {
   try {
     const user = await User.findByPk(userId, {
-      include: [{ model: Merchant }]
-    });
-    
+      include: [{ model: Merchant }],
+    })
+
     if (!user || !user.Merchant) {
-      throw new Error("Usuario o perfil de comerciante no encontrado");
+      throw new Error("Usuario o perfil de comerciante no encontrado")
     }
-    
-    const merchantId = user.Merchant.id;
-    
+
+    const merchantId = user.Merchant.id
+
     await Merchant.update(profileData, {
-      where: { id: merchantId }
-    });
-    
-    return await this.getMerchantProfile(userId);
+      where: { id: merchantId },
+    })
+
+    return await this.getMerchantProfile(userId)
   } catch (error) {
-    console.error("Error en updateMerchantProfile:", error);
-    throw error;
+    console.error("Error en updateMerchantProfile:", error)
+    throw error
   }
-};
+}
+
+exports.updateProducerProfile = async (userId, profileData) => {
+  try {
+    console.log("Actualizando perfil de productor para userId:", userId)
+    console.log("Datos a actualizar:", profileData)
+
+    const user = await User.findByPk(userId, {
+      include: [{ model: Producer }],
+    })
+
+    if (!user) {
+      throw new Error("Usuario no encontrado")
+    }
+
+    if (!user.Producer) {
+      console.log("Creando nuevo perfil de productor")
+      await Producer.create({
+        userId: user.id,
+        ...profileData,
+      })
+    } else {
+      console.log("Actualizando perfil de productor existente")
+      await Producer.update(profileData, {
+        where: { userId },
+      })
+    }
+
+    return await this.getProducerProfile(userId)
+  } catch (error) {
+    console.error("Error en updateProducerProfile:", error)
+    throw error
+  }
+}
 
 exports.updateMerchantSupplyNeeds = async (merchantId, supplyData) => {
   try {
     const existingNeeds = await MerchantSupplyNeeds.findOne({
-      where: { merchantId }
-    });
-    
+      where: { merchantId },
+    })
+
     if (existingNeeds) {
       await MerchantSupplyNeeds.update(supplyData, {
-        where: { merchantId }
-      });
+        where: { merchantId },
+      })
     } else {
       await MerchantSupplyNeeds.create({
         ...supplyData,
-        merchantId
-      });
+        merchantId,
+      })
     }
-    
+
     return await MerchantSupplyNeeds.findOne({
-      where: { merchantId }
-    });
+      where: { merchantId },
+    })
   } catch (error) {
-    console.error("Error en updateMerchantSupplyNeeds:", error);
-    throw error;
+    console.error("Error en updateMerchantSupplyNeeds:", error)
+    throw error
   }
-};
+}
+
