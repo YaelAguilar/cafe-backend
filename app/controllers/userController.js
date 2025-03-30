@@ -817,24 +817,44 @@ exports.uploadProducerPhotos = async (req, res) => {
 
 exports.getProducerPhotos = async (req, res) => {
   try {
-    const userId = req.userId
+    let producer;
 
-    // Obtener el productor
-    const producer = await Producer.findOne({ where: { userId } })
-    if (!producer) {
-      return res.status(404).json({
-        success: false,
-        message: "Perfil de productor no encontrado.",
-      })
+    // Si se envía el parámetro producerId, lo usamos para buscar el productor
+    if (req.query.producerId) {
+      producer = await Producer.findOne({ where: { id: req.query.producerId } });
+      if (!producer) {
+        return res.status(404).json({
+          success: false,
+          message: "Perfil de productor no encontrado.",
+        });
+      }
+    } else {
+      // Si no se pasa, usamos el id del usuario autenticado
+      producer = await Producer.findOne({ where: { userId: req.userId } });
+      if (!producer) {
+        return res.status(404).json({
+          success: false,
+          message: "Perfil de productor no encontrado.",
+        });
+      }
     }
 
-    const ProducerPhoto = require("../models/ProducerPhoto")
+    // Obtenemos el ID, ya que en el modelo se define "id" pero la columna es "id_producer"
+    const producerId = producer.id || producer.dataValues.id_producer;
+    if (!producerId) {
+      return res.status(500).json({
+        success: false,
+        message: "No se pudo determinar el ID del productor.",
+      });
+    }
 
-    // Obtener todas las fotos del productor
+    const ProducerPhoto = require("../models/ProducerPhoto");
+
+    // Obtener todas las fotos del productor ordenadas por fecha de subida (descendente)
     const photos = await ProducerPhoto.findAll({
-      where: { producerId: producer.id },
+      where: { producerId },
       order: [["uploadDate", "DESC"]],
-    })
+    });
 
     return res.status(200).json({
       success: true,
@@ -845,15 +865,15 @@ exports.getProducerPhotos = async (req, res) => {
         description: photo.description,
         uploadDate: photo.uploadDate,
       })),
-    })
+    });
   } catch (error) {
-    console.error("Error en getProducerPhotos:", error)
+    console.error("Error en getProducerPhotos:", error);
     return res.status(500).json({
       success: false,
       message: "Error en el servidor al obtener las fotos.",
-    })
+    });
   }
-}
+};
 
 exports.getProviderList = async (req, res) => {
   try {
@@ -867,6 +887,39 @@ exports.getProviderList = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Error en el servidor al obtener la lista de proveedores.",
+    });
+  }
+};
+
+exports.getProducerById = async (req, res) => {
+  try {
+    const producerId = req.params.id;
+    // Buscamos al productor por su PK (id_producer) y traemos también el usuario asociado
+    const producer = await Producer.findByPk(producerId, {
+      include: [{ 
+        model: require("../models/User"), 
+        attributes: { exclude: ["password"] } 
+      }],
+    });
+
+    if (!producer) {
+      return res.status(404).json({
+        success: false,
+        message: "Productor no encontrado.",
+      });
+    }
+
+    // Preparamos un objeto que contenga toda la información requerida
+    // Para mantener compatibilidad con lo que usa el front, lo incluimos en una propiedad "Producer"
+    return res.status(200).json({
+      success: true,
+      provider: { Producer: producer },
+    });
+  } catch (error) {
+    console.error("Error en getProducerById:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error en el servidor al obtener el perfil del productor.",
     });
   }
 };

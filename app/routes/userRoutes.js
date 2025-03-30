@@ -56,5 +56,13 @@ router.post("/upload-profile-image", authMiddleware, upload.single("image"), use
 router.post("/producer/upload-photos", authMiddleware, upload.array("photos", 10), userController.uploadProducerPhotos)
 router.get("/producer/photos", authMiddleware, userController.getProducerPhotos)
 
+// Rutas para productores
+router.get("/producer/profile", authMiddleware, userController.getProducerProfile);
+router.put("/producer/profile", authMiddleware, userController.updateProducerProfile);
+// Nueva ruta para obtener la ficha técnica (vista de solo lectura) de un productor por id:
+router.get("/producer/:id", authMiddleware, userController.getProducerById);
+
+router.get("/producer/photos", authMiddleware, userController.getProducerPhotos);
+
 module.exports = router
 
