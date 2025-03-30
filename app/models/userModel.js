@@ -209,3 +209,15 @@ exports.updateMerchantSupplyNeeds = async (merchantId, supplyData) => {
   }
 }
 
+exports.getProviders = async () => {
+  try {
+    return await User.findAll({
+      where: { userType: "producer" },
+      attributes: { exclude: ["password"] },
+      include: [{ model: Producer }],
+    });
+  } catch (error) {
+    console.error("Error en getProviders:", error);
+    throw error;
+  }
+};

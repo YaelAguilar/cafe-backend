@@ -46,6 +46,9 @@ router.put("/merchant/supply-needs", authMiddleware, userController.updateMercha
 router.get("/producer/profile", authMiddleware, userController.getProducerProfile)
 router.put("/producer/profile", authMiddleware, userController.updateProducerProfile)
 
+// Obtener la lista de proveedores
+router.get("/producer/list", authMiddleware, userController.getProviderList);
+
 // Ruta para subir imagen de perfil
 router.post("/upload-profile-image", authMiddleware, upload.single("image"), userController.uploadProfileImage)
 

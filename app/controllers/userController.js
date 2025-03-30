@@ -855,3 +855,18 @@ exports.getProducerPhotos = async (req, res) => {
   }
 }
 
+exports.getProviderList = async (req, res) => {
+  try {
+    const providers = await userModel.getProviders();
+    return res.status(200).json({
+      success: true,
+      providers,
+    });
+  } catch (error) {
+    console.error("Error en getProviderList:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error en el servidor al obtener la lista de proveedores.",
+    });
+  }
+};
