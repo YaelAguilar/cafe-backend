@@ -1,18 +1,29 @@
-const sequelize = require('../database/db');
+const sequelize = require("../database/db")
 
-const User = require('./User');
-const Conversation = require('./Conversation');
-const Message = require('./Message');
+const User = require("./User")
+const Producer = require("./Producer")
+const Merchant = require("./Merchant")
+const Conversation = require("./Conversation")
+const Message = require("./Message")
 
-Conversation.hasMany(Message, { foreignKey: 'conversation_id' });
-Message.belongsTo(Conversation, { foreignKey: 'conversation_id' });
+User.hasOne(Producer, { foreignKey: "userId" })
+Producer.belongsTo(User, { foreignKey: "userId" })
 
-User.hasMany(Message, { foreignKey: 'user_id' });
-Message.belongsTo(User, { foreignKey: 'user_id' });
+User.hasOne(Merchant, { foreignKey: "userId" })
+Merchant.belongsTo(User, { foreignKey: "userId" })
+
+Conversation.hasMany(Message, { foreignKey: "conversationId" })
+Message.belongsTo(Conversation, { foreignKey: "conversationId" })
+
+User.hasMany(Message, { foreignKey: "userId" })
+Message.belongsTo(User, { foreignKey: "userId" })
 
 module.exports = {
   sequelize,
   User,
+  Producer,
+  Merchant,
   Conversation,
-  Message
-};
+  Message,
+}
+
