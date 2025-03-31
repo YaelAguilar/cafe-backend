@@ -2,6 +2,8 @@ const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const userModel = require("../models/userModel")
 const Producer = require("../models/Producer")
+const Merchant = require("../models/Merchant");
+const MerchantSupplyNeeds = require("../models/MerchantSupplyNeeds");
 const fs = require("fs")
 
 const validateEmail = (email) => {
@@ -527,20 +529,20 @@ exports.logoutUser = (req, res) => {
 
 exports.listUsers = async (req, res) => {
   try {
-    const users = await userModel.getAllUsers()
-    const filtered = users.filter((u) => u.id !== req.userId)
+    const users = await userModel.getAllUsers();
+    const filtered = users.filter((u) => u.id !== req.userId);
     return res.status(200).json({
       success: true,
       users: filtered,
-    })
+    });
   } catch (error) {
-    console.error("Error en listUsers:", error)
+    console.error("Error en listUsers:", error);
     return res.status(500).json({
       success: false,
       message: "Error en el servidor al obtener usuarios.",
-    })
+    });
   }
-}
+};
 
 exports.getProducerProfile = async (req, res) => {
   try {
@@ -923,3 +925,23 @@ exports.getProducerById = async (req, res) => {
     });
   }
 };
+
+exports.listMerchants = async (req, res) => {
+  try {
+    const merchants = await Merchant.findAll({
+      include: [{ model: MerchantSupplyNeeds, as: "MerchantSupplyNeeds" }],
+    });
+
+    return res.status(200).json({
+      success: true,
+      merchants,
+    });
+  } catch (error) {
+    console.error("Error en listMerchants:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error en el servidor al obtener comerciantes.",
+    });
+  }
+};
+

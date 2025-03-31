@@ -64,5 +64,9 @@ router.get("/producer/:id", authMiddleware, userController.getProducerById);
 
 router.get("/producer/photos", authMiddleware, userController.getProducerPhotos);
 
+router.get("/list", authMiddleware, userController.listUsers);
+
+router.get("/merchant/list", authMiddleware, userController.listMerchants);
+
 module.exports = router
 

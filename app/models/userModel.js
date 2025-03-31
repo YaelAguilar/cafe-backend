@@ -70,6 +70,13 @@ exports.getAllUsers = async () => {
   try {
     return await User.findAll({
       attributes: { exclude: ["password"] },
+      include: [
+        {
+          model: Merchant, // Importado arriba
+          // as: 'Merchant', // si definiste un alias, se incluye
+          required: false, // para que incluya también usuarios que no tengan merchant
+        },
+      ],
     })
   } catch (error) {
     console.error("Error en getAllUsers:", error)
@@ -218,6 +225,39 @@ exports.getProviders = async () => {
     });
   } catch (error) {
     console.error("Error en getProviders:", error);
+    throw error;
+  }
+};
+
+exports.listMerchants = async (req, res) => {
+  try {
+    // Llamas a una función que traiga todos los merchants con su User
+    const merchants = await userModel.getAllMerchants();
+    return res.status(200).json({
+      success: true,
+      merchants,
+    });
+  } catch (error) {
+    console.error("Error en listMerchants:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Error al obtener la lista de comerciantes.",
+    });
+  }
+};
+
+exports.getAllMerchants = async () => {
+  try {
+    return await Merchant.findAll({
+      include: [
+        {
+          model: User,
+          attributes: { exclude: ["password"] },
+        },
+      ],
+    });
+  } catch (error) {
+    console.error("Error en getAllMerchants:", error);
     throw error;
   }
 };
