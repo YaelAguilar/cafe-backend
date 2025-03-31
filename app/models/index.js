@@ -3,6 +3,7 @@ const sequelize = require("../database/db")
 const User = require("./User")
 const Producer = require("./Producer")
 const Merchant = require("./Merchant")
+const Chat = require('./chat');
 
 User.hasOne(Producer, { foreignKey: "userId" })
 Producer.belongsTo(User, { foreignKey: "userId" })
@@ -15,5 +16,6 @@ module.exports = {
   User,
   Producer,
   Merchant,
+  Chat
 }
 
