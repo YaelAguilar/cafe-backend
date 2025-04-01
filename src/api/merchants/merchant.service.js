@@ -177,10 +177,29 @@ const uploadProfileImage = async (userId, file) => {
   }
 }
 
+/**
+ * Obtiene un comerciante por su ID
+ */
+const getMerchantById = async (merchantId) => {
+  const merchant = await Merchant.findByPk(merchantId, {
+    include: [
+      { model: MerchantSupplyNeeds, as: "MerchantSupplyNeeds" },
+      { model: User, attributes: { exclude: ["password"] } }
+    ],
+  });
+  
+  if (!merchant) {
+    throw new NotFoundError("Comerciante no encontrado.");
+  }
+  
+  return merchant;
+}
+
 module.exports = {
   getMerchantProfile,
   uploadProfileImage,
   updateMerchantProfile,
   updateMerchantSupplyNeeds,
-  listMerchants
+  listMerchants,
+  getMerchantById
 }

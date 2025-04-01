@@ -97,3 +97,20 @@ exports.uploadProfileImage = async (req, res, next) => {
     next(error);
   }
 }
+
+/**
+ * Obtiene un comerciante por su ID
+ */
+exports.getMerchantById = async (req, res, next) => {
+  try {
+    const merchantId = req.params.id;
+    const merchant = await merchantService.getMerchantById(merchantId);
+    
+    return res.status(200).json(successResponse(
+      "Perfil de comerciante obtenido exitosamente.",
+      { merchant }
+    ));
+  } catch (error) {
+    next(error);
+  }
+}
